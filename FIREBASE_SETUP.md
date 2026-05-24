@@ -77,5 +77,6 @@ users/{uid}/dashboardStats/main
 ```
 
 Screenshots are not uploaded to Firebase right now because Firebase Storage requires an upgrade. The journal can still show a local preview before saving, and Firestore only saves screenshot file names/notes so documents stay small.
+Redeploy test
 
 Firebase Storage can be added later if you upgrade Firebase. Until then, Authentication and Firestore are the only required Firebase services.
