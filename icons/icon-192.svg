@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" role="img" aria-label="SVJ Trades">
+  <rect width="192" height="192" rx="42" fill="#05070d"/>
+  <circle cx="96" cy="96" r="70" fill="#081426" stroke="#00c8ff" stroke-width="10"/>
+  <path d="M46 112c11-39 30-58 56-58 23 0 36 14 47 34" fill="none" stroke="#26b7ff" stroke-width="10" stroke-linecap="round"/>
+  <path d="M51 121l26-31 22 22 42-53" fill="none" stroke="#20b978" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="96" y="154" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="800" fill="#ffffff">SVJ</text>
+</svg>
