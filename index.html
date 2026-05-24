@@ -1,0 +1,438 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#05070d" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="SVJ Trades" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <title>S V J Trades</title>
+    <link rel="manifest" href="manifest.json" />
+    <link rel="icon" href="icons/icon-192.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="icons/icon-192.svg" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <section class="auth-shell" id="authShell">
+      <div class="auth-card">
+        <div class="brand auth-brand">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 36 36"><path d="M5 24c2-10 7-15 14-15 6 0 9 4 12 9" /><path d="M7 26l7-8 6 6 10-14" /></svg>
+          </span>
+          <span>S V J <span>Trades</span></span>
+        </div>
+        <div id="authLoading" class="auth-loading">Checking account...</div>
+        <form id="authForm" class="auth-form hidden">
+          <h1 id="authTitle">Log in</h1>
+          <p id="authSubtitle">Sign in to load your trades, milestones, settings, and scores from the cloud.</p>
+          <label>Email<input name="email" type="email" autocomplete="email" required /></label>
+          <label>Password<input name="password" type="password" autocomplete="current-password" required minlength="6" /></label>
+          <p class="auth-error" id="authError" role="alert"></p>
+          <button class="primary-button" type="submit" id="authSubmit">Log in</button>
+          <button class="link-button" type="button" id="authModeToggle">Need an account? Sign up</button>
+        </form>
+        <div id="firebaseSetupNotice" class="setup-notice hidden">
+          <h1>Firebase setup needed</h1>
+          <p>Paste your Firebase web config into <strong>firebase-config.js</strong>, then refresh this page.</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="app-shell hidden">
+      <aside class="sidebar">
+        <div class="brand">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 36 36"><path d="M5 24c2-10 7-15 14-15 6 0 9 4 12 9" /><path d="M7 26l7-8 6 6 10-14" /></svg>
+          </span>
+          <span>S V J <span>Trades</span></span>
+        </div>
+
+        <label class="search">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></svg>
+          <input id="searchInput" type="search" placeholder="Search trades" />
+        </label>
+
+        <nav class="nav" aria-label="Primary navigation">
+          <button class="nav-item active" type="button" data-view="dashboard"><svg viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5" /><path d="M5 9.5V21h14V9.5" /><path d="M9 21v-6h6v6" /></svg><span>Dashboard</span></button>
+          <button class="nav-item" type="button" data-view="trades"><svg viewBox="0 0 24 24"><path d="M3 17h18M4 14l5-5 4 4 7-8" /></svg><span>Trades</span></button>
+          <button class="nav-item" type="button" data-view="journal"><svg viewBox="0 0 24 24"><path d="M6 3h10l4 4v14H6z" /><path d="M15 3v5h5M9 13h7M9 17h5" /></svg><span>Journal</span></button>
+          <button class="nav-item" type="button" data-view="history"><svg viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h16" /><path d="M8 5v14" /></svg><span>Journal History</span></button>
+          <button class="nav-item" type="button" data-view="reports"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2" /></svg><span>Reports</span></button>
+          <button class="nav-item" type="button" data-view="milestones"><svg viewBox="0 0 24 24"><path d="M5 19V5h12l-2 4 2 4H5" /><path d="M5 19h14" /></svg><span>Milestones</span></button>
+          <button class="nav-item" type="button" data-view="settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" /><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-2.1 2.1-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V20h-3v-.1a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1-2.1-2.1.1-.1A1.7 1.7 0 0 0 4.9 15a1.7 1.7 0 0 0-1.5-1H3v-3h.4a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1 2.1-2.1.1.1a1.7 1.7 0 0 0 1.9.3 1.7 1.7 0 0 0 1-1.5V4h3v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1 2.1 2.1-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.5 1h.4v3h-.4a1.7 1.7 0 0 0-1.4 1.2z" /></svg><span>Settings</span></button>
+          <button class="nav-item sub-nav-item" type="button" data-view="paper"><svg viewBox="0 0 24 24"><path d="M5 4h14v16H5z" /><path d="M8 8h8M8 12h8M8 16h5" /></svg><span>Paper Dashboard</span></button>
+        </nav>
+
+        <section class="sidebar-milestones" aria-label="Milestone progress">
+          <div class="mini-title">Milestones</div>
+          <div id="sidebarMilestones"></div>
+        </section>
+
+        <div class="sidebar-footer">
+          <input id="csvFile" class="file-input" type="file" accept=".csv,text/csv" />
+          <button class="import-button" type="button" data-action="import">
+            <svg viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5" /><path d="M5 19h14" /></svg>
+            Import trades
+          </button>
+        </div>
+      </aside>
+
+      <main class="workspace">
+        <header class="topbar">
+          <div class="topbar-title">
+            <button class="icon-button mobile-menu-button" type="button" data-action="toggle-mobile-menu" aria-label="Open menu">
+              <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16" /></svg>
+            </button>
+            <div>
+            <h1 id="viewTitle">Dashboard</h1>
+            <p id="viewSubtitle">Performance, risk, and discipline at a glance.</p>
+            </div>
+          </div>
+          <div class="top-actions">
+            <div class="account-pill" id="accountPill">
+              <span id="accountEmail">Not signed in</span>
+              <button class="tiny-button" type="button" data-action="logout">Logout</button>
+            </div>
+            <button class="secondary-button" type="button" data-action="save-all">
+              <svg viewBox="0 0 24 24"><path d="M19 21H5V3h11l3 3z" /><path d="M8 21v-7h8v7M8 3v5h7" /></svg>
+              Save
+            </button>
+            <button class="secondary-button" type="button" data-action="export-ai">
+              <svg viewBox="0 0 24 24"><path d="M6 3h9l3 3v15H6z" /><path d="M14 3v5h4M9 13h6M9 17h4" /></svg>
+              AI Report Export
+            </button>
+            <button class="primary-button" type="button" data-view="journal">
+              <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" /></svg>
+              New trade
+            </button>
+          </div>
+        </header>
+
+        <section class="view active" id="dashboardView">
+          <section class="dashboard-grid">
+            <article class="panel equity-panel">
+              <div class="section-title">
+                <div>
+                  <h2>Equity Curve</h2>
+                  <p>Daily cumulative P/L from the selected period.</p>
+                </div>
+                <div class="segmented" role="tablist" aria-label="Range">
+                  <button class="active" type="button" data-range="30">30 days</button>
+                  <button type="button" data-range="60">60 days</button>
+                  <button type="button" data-range="90">90 days</button>
+                  <button type="button" data-range="all">All</button>
+                </div>
+              </div>
+              <div class="balance-row">
+                <div><span>Starting Balance</span><strong id="startingBalance">$0.00</strong></div>
+                <div><span>Current Balance</span><strong id="currentBalance">$0.00</strong></div>
+                <div><span>Total P/L</span><strong id="totalPnl">$0.00</strong></div>
+              </div>
+              <svg id="equityChart" class="line-chart" viewBox="0 0 900 260" preserveAspectRatio="none"></svg>
+            </article>
+
+            <aside class="panel risk-panel">
+              <h2>Daily Loss Limit</h2>
+              <div class="loss-limit-values">
+                <div><span>Limit</span><strong id="lossLimitLabel">$500.00</strong></div>
+                <div><span>Used Today</span><strong id="usedToday">$0.00</strong></div>
+                <div><span>Remaining</span><strong id="remainingToday">$500.00</strong></div>
+              </div>
+              <div class="progress-track"><span id="lossLimitBar"></span></div>
+              <p id="lossLimitStatus" class="status-note">Safe.</p>
+              <div class="verse-card">
+                <span id="dailyVerseRef">KJV</span>
+                <p id="dailyVerseText">Be still, and know that I am God.</p>
+              </div>
+            </aside>
+          </section>
+
+          <section class="stat-grid">
+            <article class="stat-card"><span>Win Rate</span><strong id="winRateCard">0%</strong><p id="winRateDetail">0 trades</p></article>
+            <article class="stat-card"><span>Average R:R</span><strong id="avgRrCard">1 : 0.0</strong><p>Average win compared with average loss.</p></article>
+            <article class="stat-card"><span>Max Drawdown</span><strong id="maxDrawdownCard">$0.00</strong><p>Largest equity drop from a prior high.</p></article>
+            <article class="stat-card"><span>Discipline Score</span><strong id="disciplineScoreCard">0%</strong><p id="disciplineDetail">Based on rule following and process control.</p></article>
+            <article class="stat-card"><span>Best Trade</span><strong id="bestTradeCard">$0.00</strong><p id="bestTradeDetail">No trades yet.</p></article>
+            <article class="stat-card"><span>Worst Trade</span><strong id="worstTradeCard">$0.00</strong><p id="worstTradeDetail">No trades yet.</p></article>
+          </section>
+
+          <section class="dashboard-grid lower single-panel">
+            <article class="panel">
+              <h2>Hourly Performance</h2>
+              <div id="hourlyList" class="hourly-list"></div>
+            </article>
+          </section>
+
+          <section class="panel dashboard-calendar-panel">
+            <div class="section-title">
+              <div>
+                <h2>Calendar Heatmap</h2>
+                <p>Daily P/L, trade count, and day quality without leaving the dashboard.</p>
+              </div>
+            </div>
+            <div class="calendar-board" id="dashboardCalendarBoard"></div>
+          </section>
+        </section>
+
+        <section class="view" id="calendarView">
+          <section class="panel">
+            <div class="section-title">
+              <div>
+                <h2>Calendar Heatmap</h2>
+                <p>Green days made money, red days lost money, gray days had no trades.</p>
+              </div>
+              <span id="calendarSummary" class="muted"></span>
+            </div>
+            <div class="calendar-board" id="calendarBoard"></div>
+          </section>
+        </section>
+
+        <section class="view" id="tradesView">
+          <section class="panel">
+            <div class="section-title">
+              <h2>Trades</h2>
+              <button class="secondary-button" type="button" data-action="export">
+                <svg viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5" /><path d="M5 21h14" /></svg>
+                Export CSV
+              </button>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Symbol</th>
+                    <th>Type</th>
+                    <th>Setup</th>
+                    <th>Side</th>
+                    <th>P&amp;L</th>
+                    <th>Plan</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="tradeRows"></tbody>
+              </table>
+            </div>
+          </section>
+        </section>
+
+        <section class="view" id="journalView">
+          <section class="journal-layout">
+            <form class="panel trade-form" id="tradeForm">
+              <div class="section-title">
+                <div>
+                  <h2 id="journalHeading">New trade</h2>
+                  <p>Log performance, risk, discipline, notes, and screenshots.</p>
+                </div>
+                <button class="secondary-button" type="button" data-action="clear-form">Clear</button>
+              </div>
+              <input name="id" type="hidden" />
+              <label class="screenshot-upload-card">Trade Screenshots
+                <input name="screenshot" type="file" accept="image/*" multiple />
+                <small>You can upload chart screenshots or any photo related to the trade.</small>
+              </label>
+              <div id="screenshotPreview" class="screenshot-preview"></div>
+              <div class="form-grid">
+                <label>Date<input name="date" type="date" required /></label>
+                <label>Symbol<select name="symbol" required><option>NASDAQ</option><option>S&P 500</option></select></label>
+                <label>Trade Type<select name="tradeType"><option>Paper Trading</option><option>Demo Trading</option><option>Live Trading</option><option>Backtest Record</option></select></label>
+                <label>Trade Strategy<select name="tradeStructure" required></select></label>
+                <label class="custom-structure-field hidden">Custom Strategy<input name="customStructure" type="text" placeholder="Type your strategy" /></label>
+                <label>Side<select name="side"><option>Long</option><option>Short</option></select></label>
+                <label>Entry Time<select name="entryTime"></select></label>
+                <label>P&amp;L<input name="netPnl" type="number" step="0.01" required /><small>Positive means won, negative means lost.</small></label>
+                <fieldset class="emotion-fieldset">
+                  <legend>Emotion LVL</legend>
+                  <label>Before The Trade Emotion LVL<select name="emotionBefore"><option value="1">1 - Calm</option><option value="2">2 - Controlled</option><option value="3">3 - Neutral</option><option value="4">4 - Emotional</option><option value="5">5 - Very emotional</option><option value="Anxious">Anxious</option><option value="Being A Pussy">Being A Pussy</option></select></label>
+                  <label>During The Trade Emotion LVL<select name="emotionDuring"><option value="1">1 - Calm</option><option value="2">2 - Controlled</option><option value="3">3 - Neutral</option><option value="4">4 - Emotional</option><option value="5">5 - Very emotional</option><option value="Anxious">Anxious</option><option value="Being A Pussy">Being A Pussy</option></select></label>
+                  <label>After The Trade Emotion LVL<select name="emotionAfter"><option value="1">1 - Calm</option><option value="2">2 - Controlled</option><option value="3">3 - Neutral</option><option value="4">4 - Emotional</option><option value="5">5 - Very emotional</option><option value="Anxious">Anxious</option><option value="Being A Pussy">Being A Pussy</option></select></label>
+                </fieldset>
+                <label>Did I follow my plan?<select name="followedPlan"><option value="true">Yes</option><option value="false">No</option></select></label>
+                <label>Did I overtrade?<select name="overtraded"><option value="false">No</option><option value="true">Yes</option></select></label>
+              </div>
+              <label>Journal notes<textarea name="notes" rows="5" placeholder="What happened? What did you do well? What should be improved next time?"></textarea></label>
+              <div class="form-actions">
+                <button class="primary-button save-trade-button" type="submit">
+                <svg viewBox="0 0 24 24"><path d="M19 21H5V3h11l3 3z" /><path d="M8 21v-7h8v7M8 3v5h7" /></svg>
+                Save trade
+                </button>
+              </div>
+            </form>
+
+            <aside class="panel coach-card">
+              <h2>Trade Coach</h2>
+              <div id="coachNotes"></div>
+            </aside>
+          </section>
+        </section>
+
+        <section class="view" id="historyView">
+          <section class="panel">
+            <div class="section-title">
+              <div>
+                <h2>Journal History</h2>
+                <p>Review your notes, screenshots, and rule-following record.</p>
+              </div>
+            </div>
+            <div class="history-tabs" role="tablist" aria-label="Journal history filters">
+              <button class="active" type="button" data-history-filter="all">All Trades</button>
+              <button type="button" data-history-filter="backtest">Backtest Records</button>
+            </div>
+            <div class="history-list" id="historyList"></div>
+          </section>
+        </section>
+
+        <section class="view" id="reportsView">
+          <section class="reports-layout">
+            <article class="panel">
+              <h2>Performance Report</h2>
+              <div class="report-metrics" id="reportMetrics"></div>
+            </article>
+            <article class="panel wide">
+              <h2>Setup Breakdown</h2>
+              <div class="table-wrap compact">
+                <table>
+                  <thead>
+                    <tr><th>Setup</th><th>Trades</th><th>Win Rate</th><th>Average Win</th><th>Average Loss</th><th>Total P/L</th></tr>
+                  </thead>
+                  <tbody id="setupBreakdown"></tbody>
+                </table>
+              </div>
+            </article>
+            <article class="panel">
+              <h2>Rules Watchlist</h2>
+              <div class="watch-list" id="watchList"></div>
+            </article>
+          </section>
+        </section>
+
+        <section class="view" id="milestonesView">
+          <section class="panel">
+            <div class="section-title">
+              <div>
+                <h2>Milestones</h2>
+                <p>Track account goals, life goals, and daily consistency.</p>
+              </div>
+            </div>
+            <div class="level-board">
+              <article class="level-card">
+                <span>Account LVL</span>
+                <strong id="diamondCounter">0 💎</strong>
+              </article>
+              <article class="level-card">
+                <span>Consistency LVL</span>
+                <strong id="cashCounter">0 💵</strong>
+              </article>
+            </div>
+            <section class="consistency-box">
+              <div>
+                <h3>Daily Consistency</h3>
+                <p>Press each one once per trading day to bank a 💵. Buttons reset at 9:30 AM.</p>
+              </div>
+              <div class="consistency-actions" id="consistencyActions"></div>
+            </section>
+            <div class="milestone-grid" id="milestoneGrid"></div>
+          </section>
+        </section>
+
+        <section class="view" id="settingsView">
+          <section class="settings-layout">
+            <form class="panel settings-form" id="settingsForm">
+              <h2>Settings</h2>
+              <div class="settings-balance-grid">
+                <label>Main Dashboard Starting Balance
+                  <input name="startingBalance" type="number" min="0" step="0.01" />
+                  <small>Used for Demo and Live trading performance.</small>
+                </label>
+                <label>Paper Dashboard Starting Balance
+                  <input name="paperStartingBalance" type="number" min="0" step="0.01" />
+                  <small>Used only for Paper Trading performance.</small>
+                </label>
+              </div>
+              <label class="check-row background-toggle"><input name="darkBackground" type="checkbox" /> Toggle Dark Background</label>
+              <p class="muted">Manual milestone checkmarks. Automatic profit milestones are calculated from Demo and Live trades.</p>
+              <div class="settings-milestones" id="settingsMilestones"></div>
+              <button class="primary-button save-settings-button" type="submit">Save settings</button>
+            </form>
+            <section class="panel">
+              <h2>Data</h2>
+              <p class="muted">Trades, settings, milestones, and scores are saved to your Firebase account when logged in.</p>
+              <button class="secondary-button" type="button" data-action="export">Export CSV</button>
+              <button class="secondary-button" type="button" data-action="export-ai">Download AI report file</button>
+            </section>
+          </section>
+        </section>
+
+        <section class="view" id="paperView">
+          <section class="dashboard-grid">
+            <article class="panel equity-panel">
+              <div class="section-title">
+                <div>
+                  <h2>Paper Trading Equity Curve</h2>
+                  <p>Practice account results only. Demo and live trades are excluded.</p>
+                </div>
+              </div>
+              <div class="balance-row">
+                <div><span>Starting Balance</span><strong id="paperStartingBalance">$0.00</strong></div>
+                <div><span>Current Balance</span><strong id="paperCurrentBalance">$0.00</strong></div>
+                <div><span>Total Paper P/L</span><strong id="paperTotalPnl">$0.00</strong></div>
+              </div>
+              <svg id="paperEquityChart" class="line-chart" viewBox="0 0 900 260" preserveAspectRatio="none"></svg>
+            </article>
+
+            <aside class="panel risk-panel">
+              <h2>Paper Summary</h2>
+              <div class="loss-limit-values">
+                <div><span>Total Paper Trades</span><strong id="paperTotalTrades">0</strong></div>
+                <div><span>Paper Wins</span><strong id="paperWins">0</strong></div>
+                <div><span>Paper Losses</span><strong id="paperLosses">0</strong></div>
+              </div>
+            </aside>
+          </section>
+
+          <section class="stat-grid">
+            <article class="stat-card"><span>Paper Win Rate</span><strong id="paperWinRateCard">0%</strong><p id="paperWinRateDetail">0 trades</p></article>
+            <article class="stat-card"><span>Paper Average R:R</span><strong id="paperAvgRrCard">1 : 0.0</strong><p>Average paper win compared with average paper loss.</p></article>
+            <article class="stat-card"><span>Paper Max Drawdown</span><strong id="paperMaxDrawdownCard">$0.00</strong><p>Largest paper equity drop.</p></article>
+            <article class="stat-card"><span>Paper Discipline</span><strong id="paperDisciplineScoreCard">0%</strong><p id="paperDisciplineDetail">Based on paper rule following.</p></article>
+            <article class="stat-card"><span>Best Paper Trade</span><strong id="paperBestTradeCard">$0.00</strong><p id="paperBestTradeDetail">No paper trades yet.</p></article>
+            <article class="stat-card"><span>Worst Paper Trade</span><strong id="paperWorstTradeCard">$0.00</strong><p id="paperWorstTradeDetail">No paper trades yet.</p></article>
+          </section>
+
+          <section class="dashboard-grid lower">
+            <article class="panel">
+              <h2>Recent Paper Trades</h2>
+              <div class="recent-grid" id="paperRecentTrades"></div>
+            </article>
+            <article class="panel">
+              <h2>Paper Hourly Performance</h2>
+              <div id="paperHourlyList" class="hourly-list"></div>
+            </article>
+          </section>
+
+          <section class="panel dashboard-calendar-panel">
+            <div class="section-title">
+              <div>
+                <h2>Paper Calendar Heatmap</h2>
+                <p>Only paper trading days and paper P/L.</p>
+              </div>
+            </div>
+            <div class="calendar-board" id="paperCalendarBoard"></div>
+          </section>
+        </section>
+      </main>
+    </div>
+
+    <div class="lightbox hidden" id="imageLightbox" role="dialog" aria-modal="true" aria-label="Screenshot preview">
+      <button class="icon-button lightbox-close" type="button" data-action="close-lightbox">×</button>
+      <img id="lightboxImage" alt="Expanded trade screenshot" />
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
